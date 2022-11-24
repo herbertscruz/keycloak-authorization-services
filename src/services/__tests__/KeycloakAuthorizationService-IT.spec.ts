@@ -5,7 +5,7 @@ import debugPkg from 'debug';
 import JWTTokenService from '../JWTTokenService';
 import KeycloakAuthorizationService from '../KeycloakAuthorizationService';
 const debug = debugPkg(
-  'keycloak-authorization-service:keycloak-authorization-service-it'
+  'keycloak-authorization-service:keycloak-authorization-service-it',
 );
 
 const config = {

@@ -3,7 +3,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express';
 import JWTTokenService from '../services/JWTTokenService';
 import KeycloakAuthorizationService from '../services/KeycloakAuthorizationService';
 const debug = debugPkg(
-  'keycloak-authorization-service:authorization-by-permission'
+  'keycloak-authorization-service:authorization-by-permission',
 );
 
 interface KeycloakAuthorizationConfig {
@@ -21,7 +21,7 @@ interface KeycloakAuthorizationByPermission {
 
 export default function authorizationByPermission(
   config: KeycloakAuthorizationConfig,
-  params: KeycloakAuthorizationByPermission
+  params: KeycloakAuthorizationByPermission,
 ): RequestHandler {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {

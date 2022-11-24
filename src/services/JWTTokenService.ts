@@ -23,7 +23,7 @@ export default class JWTTokenService {
       (resolve: (decoded: any) => void, reject: (error: Error) => void) => {
         const verifyCallback: VerifyCallback<JwtPayload | string> = (
           error: jwt.VerifyErrors | null,
-          decoded: any
+          decoded: any,
         ): void => {
           if (error) {
             debug(error);
@@ -34,13 +34,13 @@ export default class JWTTokenService {
         };
 
         jwt.verify(token, this.getKey, verifyCallback);
-      }
+      },
     );
   }
 
   private getKey(
     header: jwt.JwtHeader,
-    callback: jwt.SigningKeyCallback
+    callback: jwt.SigningKeyCallback,
   ): void {
     const jwksUri = `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/certs`;
     debug(jwksUri);
