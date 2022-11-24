@@ -4,7 +4,9 @@
 import debugPkg from 'debug';
 import JWTTokenService from '../JWTTokenService';
 import KeycloakAuthorizationService from '../KeycloakAuthorizationService';
-const debug = debugPkg('keycloak-authorization-service:keycloak-authorization-service-it');
+const debug = debugPkg(
+  'keycloak-authorization-service:keycloak-authorization-service-it'
+);
 
 const config = {
   baseUrl: 'http://host.docker.internal:8081',
