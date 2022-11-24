@@ -11,7 +11,8 @@
     "prettier": "prettier --write .",
     "prepare": "husky install",
     "prebuild": "shx rm -rf dist",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "Herberts Cruz<herbertscruz@gmail.com>",
