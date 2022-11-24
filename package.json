@@ -1,8 +1,9 @@
 {
   "name": "keycloak-authorization-services",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This library implements the [Keycloak Authorization Service](https://www.keycloak.org/docs/latest/authorization_services/#_service_overview).",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types" : "dist/index.d.ts",
   "scripts": {
     "test": "cross-env DEBUG=keycloak-authorization-service:* jest --passWithNoTests --group=unit/test",
     "test:integration": "cross-env DEBUG=keycloak-authorization-service:* jest --passWithNoTests --group=integration/test",
