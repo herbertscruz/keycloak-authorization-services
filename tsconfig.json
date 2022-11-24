@@ -18,6 +18,7 @@
     "removeComments": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   }
 }
