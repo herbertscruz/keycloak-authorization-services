@@ -35,15 +35,10 @@ app.get(
   }),
   /* End: Adds authorization middleware by permissions */
 
-  async function (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async function (req: Request, res: Response, next: NextFunction) {
     //...
   },
 );
-
 ```
 
 ## Backlog
