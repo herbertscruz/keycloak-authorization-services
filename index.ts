@@ -1,16 +1,4 @@
-import axios from 'axios';
+import JWTTokenService from './src/services/JWTTokenService';
+import KeycloakAuthorizationService from './src/services/KeycloakAuthorizationService';
 
-interface KeycloakAuthorizationOptions {
-  baseUrl: string;
-}
-
-export default class KeycloakAuthorizationService {
-  constructor(private readonly config: KeycloakAuthorizationOptions) {}
-
-  async uma2Configuration(): Promise<any> {
-    const { data } = await axios.get(
-      `${this.config.baseUrl}/.well-known/uma2-configuration`
-    );
-    return data;
-  }
-}
+export default { JWTTokenService, KeycloakAuthorizationService };
