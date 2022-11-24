@@ -11,8 +11,7 @@
     "prettier": "prettier --write .",
     "prepare": "husky install",
     "prebuild": "shx rm -rf dist",
-    "build": "tsc -p .",
-    "prepublish": "npm run build"
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "Herberts Cruz<herbertscruz@gmail.com>",
@@ -63,6 +62,11 @@
       "git add ."
     ]
   },
+  "files": [
+    "dist",
+    "LICENCE",
+    "README.md"
+  ],
   "engines": {
     "node": "16.x"
   },
