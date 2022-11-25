@@ -30,8 +30,8 @@ app.get(
 
   /* Start: Adds authorization middleware by permissions */
   authorizationByPermission(config, {
+    permission: { resource: 'Default Resource', scopes: ['view'] },
     audience: 'customer-client',
-    permission: 'Default Resource',
   }),
   /* End: Adds authorization middleware by permissions */
 
@@ -49,5 +49,5 @@ app.get(
 - [ ] Authorization request for UMA protected resource after receiving a permission ticket from the resource server as part of the authorization process
 - [x] Client authentication methods when acting on behalf of a user
 - [x] Client authentication methods when acting on your behalf
-- [ ] Push arbitrary claims
+- [x] Push arbitrary claims
 - [ ] Token RPT introspection

@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import debugPkg from 'debug';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import JWTTokenService from '../services/JWTTokenService';
@@ -15,7 +16,8 @@ interface KeycloakAuthorizationConfig {
 }
 
 interface KeycloakAuthorizationByPermission {
-  permission?: string | string[];
+  claim_token?: object;
+  permission?: { resource?: string; scopes?: string[] };
   audience?: string;
 }
 
@@ -33,14 +35,22 @@ export default function authorizationByPermission(
 
       const jwtToken = new JWTTokenService(config);
       const service = new KeycloakAuthorizationService(config, jwtToken);
-      await service.authorizationRequest(params, {
-        token,
-        clientId: config?.clientId,
-        clientSecret: config?.clientSecret,
-      });
+      const { result } = await service.authorizationRequest(
+        {
+          ...params,
+          response_mode: 'decision',
+        },
+        {
+          token,
+          clientId: config?.clientId,
+          clientSecret: config?.clientSecret,
+        },
+      );
 
+      if (!result) throw new AxiosError('Forbidden', '401');
       next();
     } catch (error) {
+      debug(error);
       next(error);
     }
   };
