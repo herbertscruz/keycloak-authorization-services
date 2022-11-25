@@ -33,7 +33,11 @@ export default class JWTTokenService {
           return resolve(decoded);
         };
 
-        jwt.verify(token, this.getKey, verifyCallback);
+        jwt.verify(
+          token,
+          (...params) => this.getKey(...params),
+          verifyCallback,
+        );
       },
     );
   }
@@ -42,11 +46,14 @@ export default class JWTTokenService {
     header: jwt.JwtHeader,
     callback: jwt.SigningKeyCallback,
   ): void {
+    debug('---');
+    debug(this.config);
+    debug('---');
     const jwksUri = `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/certs`;
     debug(jwksUri);
     const client = jwksClient({
       jwksUri,
-      timeout: this.config.timeout || 30000,
+      timeout: this.config?.timeout || 30000,
     });
 
     client

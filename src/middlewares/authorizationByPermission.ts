@@ -16,7 +16,7 @@ interface KeycloakAuthorizationConfig {
 }
 
 interface KeycloakAuthorizationByPermission {
-  claim_token?: object;
+  claimToken?: object;
   permission?: { resource?: string; scopes?: string[] };
   audience?: string;
 }
@@ -38,6 +38,7 @@ export default function authorizationByPermission(
       const { result } = await service.authorizationRequest(
         {
           ...params,
+          claim_token: params.claimToken,
           response_mode: 'decision',
         },
         {

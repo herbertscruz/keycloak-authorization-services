@@ -28,6 +28,16 @@ const app = express();
 app.get(
   '/api/tests',
 
+  /* Start: Adds authorization middleware by roles */
+  authorizationByRoles(config, {
+    decodedType: 'decode',
+    permission: {
+      application: 'customer-client',
+      roles: ['default-roles-main', 'uma_protection'],
+    },
+  }),
+  /* End: Adds authorization middleware by roles */
+
   /* Start: Adds authorization middleware by permissions */
   authorizationByPermission(config, {
     permission: { resource: 'Default Resource', scopes: ['view'] },
@@ -43,6 +53,7 @@ app.get(
 
 ## Backlog
 
+- [x] Authorization request for roles
 - [x] Discovering authorization services endpoints and metadata
 - [x] Authorization request for specific resources protected by a resource server
 - [x] Authorization request for any resource and scope protected by a resource server
