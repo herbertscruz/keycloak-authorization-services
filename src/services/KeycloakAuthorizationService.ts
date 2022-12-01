@@ -49,23 +49,43 @@ export default class KeycloakAuthorizationService {
     params: KeycloakAuthorizationRequestParams,
     options: KeycloakAuthorizationRequestOptions,
   ): Promise<any> {
-    const form = {
-      grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
-      ...params,
-    } as any;
-    form.claim_token = this.normalizeClaimsToken(params);
-    if (params.claim_token) {
-      form.claim_token_format = 'urn:ietf:params:oauth:token-type:jwt';
+    const formSet = new Set();
+    formSet.add('grant_type=urn:ietf:params:oauth:grant-type:uma-ticket');
+
+    Object.keys(params).forEach((key) => {
+      const value = (params as any)[key];
+      if (key !== 'permission' && value) {
+        formSet.add(`${key}=${value}`);
+      }
+    });
+
+    const claimToken = this.normalizeClaimsToken(params);
+    if (claimToken) {
+      formSet.add(`claim_token=${claimToken}`);
     }
-    form.permission = this.normalizePermission(params);
-    form.audience = this.normalizeAudience(params, options);
+    if (params.claim_token) {
+      formSet.add('claim_token_format=urn:ietf:params:oauth:token-type:jwt');
+    }
+
+    const audience = this.normalizeAudience(params, options);
+    if (audience) {
+      formSet.add(`audience=${audience}`);
+    }
+
+    const form = [...formSet];
+
+    const permissions = this.normalizePermission(params);
+    permissions.forEach((permission) => form.push(`permission=${permission}`));
+
     debug(form);
+    console.log(form);
 
     const Authorization = this.normalizeAuthorization(options);
     debug(Authorization);
+
     const { data } = await axios.post(
       `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/token`,
-      form,
+      form.join('&'),
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -116,7 +136,7 @@ export default class KeycloakAuthorizationService {
 
   private normalizePermission(
     params: KeycloakAuthorizationRequestParams,
-  ): string {
+  ): string[] {
     const checkInvalidCharacters = (str: string) => {
       if (/[,#]/g.test(str.trim())) {
         throw new AxiosError(
@@ -124,17 +144,23 @@ export default class KeycloakAuthorizationService {
           '422',
         );
       }
+      return true;
     };
     const result = [];
+    let resource = '';
     if (params?.permission?.resource) {
       checkInvalidCharacters(params.permission.resource);
-      result.push(params.permission.resource.trim());
+      resource = params.permission.resource.trim();
     }
     if (params?.permission?.scopes) {
-      params.permission.scopes.some((s) => checkInvalidCharacters(s));
-      result.push(params.permission.scopes.map((s) => s.trim()).join(', '));
+      params.permission.scopes.forEach((s) => {
+        checkInvalidCharacters(s);
+        result.push(`${resource}#${s.trim()}`);
+      });
+    } else if (resource) {
+      result.push(resource);
     }
-    return result.join('#');
+    return result;
   }
 
   private normalizeAudience(

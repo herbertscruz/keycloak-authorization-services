@@ -1,23 +1,13 @@
-import { AxiosError } from 'axios';
 import debugPkg from 'debug';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import JWTTokenService from '../services/JWTTokenService';
+import IKeycloakAuthorizationByRoles from '../interfaces/IKeycloakAuthorizationByRoles';
+import IKeycloakAuthorizationConfig from '../interfaces/IKeycloakAuthorizationConfig';
+import validationByRoles from '../services/validationByRoles';
 const debug = debugPkg('keycloak-authorization-service:authorization-by-roles');
 
-interface KeycloakAuthorizationConfig {
-  baseUrl: string;
-  realm: string;
-  timeout?: number;
-}
-
-interface KeycloakAuthorizationByRoles {
-  decodedType?: 'verify' | 'decode';
-  permission?: { application?: string; roles: string[] };
-}
-
 export default function authorizationByRoles(
-  config: KeycloakAuthorizationConfig,
-  options?: KeycloakAuthorizationByRoles,
+  config: IKeycloakAuthorizationConfig,
+  options?: IKeycloakAuthorizationByRoles,
 ): RequestHandler {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -26,34 +16,8 @@ export default function authorizationByRoles(
 
       const token = (req?.headers?.authorization || '').replace('Bearer ', '');
       debug(token);
-      if (!token) throw new AxiosError('Forbidden', '401');
 
-      const jwtToken = new JWTTokenService(config);
-      let decoded;
-      if (options?.decodedType === 'decode') {
-        decoded = jwtToken.decode(token);
-      } else {
-        decoded = await jwtToken.verifyAndDecode(token);
-      }
-      debug(decoded);
-
-      if (options?.permission) {
-        let roles = [];
-        if (decoded?.clientId) {
-          const application =
-            options?.permission?.application || decoded?.clientId;
-          roles = (decoded?.resource_access || {})[application]?.roles;
-        } else {
-          roles = decoded?.realm_access?.roles || [];
-        }
-        debug(roles);
-
-        if (
-          !roles.some((r: string) => options?.permission?.roles.includes(r))
-        ) {
-          throw new AxiosError('Forbidden', '401');
-        }
-      }
+      await validationByRoles(token, config, options);
       next();
     } catch (error) {
       debug(error);
