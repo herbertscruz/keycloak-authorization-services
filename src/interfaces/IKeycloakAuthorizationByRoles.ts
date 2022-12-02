@@ -1,4 +1,4 @@
 export default interface IKeycloakAuthorizationByRoles {
   decodedType?: 'verify' | 'decode';
-  permission?: { application?: string; roles: string[] };
+  permission?: { client?: string; roles: string[] };
 }

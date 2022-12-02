@@ -27,14 +27,16 @@ export default async function validationByRoles(
     debug(decoded);
 
     if (options?.permission) {
-      let roles = [];
-      if (decoded?.clientId) {
-        const application =
-          options?.permission?.application || decoded?.clientId;
-        roles = (decoded?.resource_access || {})[application]?.roles;
-      } else {
-        roles = decoded?.realm_access?.roles || [];
-      }
+      const roles = [];
+
+      const realmAccessRoles = decoded?.realm_access?.roles || [];
+      roles.push(...realmAccessRoles);
+
+      const client = options?.permission?.client || decoded.azp;
+      const resourceAccessRoles =
+        (decoded?.resource_access || {})[client]?.roles || [];
+      roles.push(...resourceAccessRoles);
+
       debug(roles);
 
       if (!roles.some((r: string) => options?.permission?.roles.includes(r))) {

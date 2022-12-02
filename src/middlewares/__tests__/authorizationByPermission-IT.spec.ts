@@ -20,8 +20,6 @@ const tokens = {
 const config = {
   baseUrl: process.env.KEYCLOAK_BASE_URL || '',
   realm: process.env.KEYCLOAK_REALM || '',
-  clientId: process.env.KEYCLOAK_CLIENT_ID || '',
-  clientSecret: process.env.KEYCLOAK_CLIENT_SECRET || '',
 };
 
 const app = express();

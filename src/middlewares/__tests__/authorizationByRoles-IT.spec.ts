@@ -20,8 +20,6 @@ const tokens = {
 const config = {
   baseUrl: process.env.KEYCLOAK_BASE_URL || '',
   realm: process.env.KEYCLOAK_REALM || '',
-  clientId: '',
-  clientSecret: '',
 };
 
 const app = express();
@@ -69,7 +67,7 @@ app.get(
   authorizationByRoles(config, {
     decodedType: 'decode',
     permission: {
-      application: 'customer-client',
+      client: 'customer-client',
       roles: ['default-roles-main', 'uma_protection'],
     },
   }),

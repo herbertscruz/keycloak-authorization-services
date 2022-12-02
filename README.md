@@ -18,8 +18,6 @@ import { authorizationByPermission } from '../authorizationByPermission';
 const config = {
   baseUrl: 'http://host.docker.internal:8081',
   realm: 'main',
-  clientId: 'customer-client',
-  clientSecret: 'JaASlgV76n9a8IKx4oGgKi8h8ilHNAQ6',
 };
 /* End: Define general settings */
 
@@ -32,7 +30,7 @@ app.get(
   authorizationByRoles(config, {
     decodedType: 'decode',
     permission: {
-      application: 'customer-client',
+      client: 'customer-client',
       roles: ['default-roles-main', 'uma_protection'],
     },
   }),

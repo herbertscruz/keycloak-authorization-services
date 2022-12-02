@@ -25,8 +25,6 @@ interface KeycloakAuthorizationRequestParams {
 
 interface KeycloakAuthorizationRequestOptions {
   token: string;
-  clientId: string;
-  clientSecret: string;
 }
 
 /**
@@ -78,10 +76,6 @@ export default class KeycloakAuthorizationService {
     permissions.forEach((permission) => form.push(`permission=${permission}`));
 
     debug(form);
-    console.log(form);
-
-    const Authorization = this.normalizeAuthorization(options);
-    debug(Authorization);
 
     const { data } = await axios.post(
       `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/token`,
@@ -89,42 +83,11 @@ export default class KeycloakAuthorizationService {
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          Authorization,
+          Authorization: `Bearer ${options.token}`,
         },
       },
     );
     return data;
-  }
-
-  private checkKeycloakAuthorizationRequestOptions(
-    options: KeycloakAuthorizationRequestOptions,
-    requirements: string[],
-  ) {
-    debug(options);
-    debug(requirements);
-    debug(Object.keys(options));
-
-    const check = (i: string) => {
-      return Object.keys(options).includes(i) && (options as any)[i]?.trim();
-    };
-
-    if (!requirements) return;
-    if (!requirements.every(check)) {
-      throw new AxiosError(`${requirements.join(' and ')} is required`, '422');
-    }
-  }
-
-  private getClientBasicToken(
-    options: KeycloakAuthorizationRequestOptions,
-  ): string {
-    debug(options);
-    this.checkKeycloakAuthorizationRequestOptions(options, [
-      'clientId',
-      'clientSecret',
-    ]);
-    return Buffer.from(`${options.clientId}:${options.clientSecret}`).toString(
-      'base64',
-    );
   }
 
   private normalizeClaimsToken(
@@ -168,23 +131,9 @@ export default class KeycloakAuthorizationService {
     options: KeycloakAuthorizationRequestOptions,
   ): string | undefined {
     if (!params.audience && params.permission) {
-      if (options.clientId) {
-        return options.clientId;
-      } else {
-        this.checkKeycloakAuthorizationRequestOptions(options, ['audience']);
-      }
+      const { azp } = this.jwtToken.decode(options.token);
+      return azp;
     }
     return params.audience;
-  }
-
-  private normalizeAuthorization(
-    options: KeycloakAuthorizationRequestOptions,
-  ): string {
-    let token = `Bearer ${options.token}`;
-    const decoded = this.jwtToken.decode(options.token);
-    if (decoded?.clientId) {
-      token = `Basic ${this.getClientBasicToken(options)}`;
-    }
-    return token;
   }
 }

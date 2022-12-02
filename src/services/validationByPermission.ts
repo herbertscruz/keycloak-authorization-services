@@ -28,11 +28,7 @@ export default async function validationByPermission(
         claim_token: options.claimToken,
         response_mode: 'decision',
       },
-      {
-        token,
-        clientId: config?.clientId,
-        clientSecret: config?.clientSecret,
-      },
+      { token },
     );
 
     if (!result) throw new AxiosError('Forbidden', '401');
