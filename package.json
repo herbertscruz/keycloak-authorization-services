@@ -49,6 +49,7 @@
     "prettier": "^2.7.1",
     "shx": "^0.3.4",
     "supertest": "^6.2.4",
+    "testcontainers": "^9.0.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
