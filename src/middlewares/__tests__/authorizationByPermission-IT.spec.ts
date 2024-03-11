@@ -69,15 +69,10 @@ describe('when requesting all authorization services endpoints and metadata', ()
   let app: Express;
 
   beforeAll(async () => {
-    await helper.startKeycloakContainer();
     tokens.user = await helper.getUserAccessToken();
     tokens.client = await helper.getClientAccessToken();
     config.baseUrl = helper.getBaseUrl();
     app = getApp(config);
-  });
-
-  afterAll(async () => {
-    await helper.stopKeycloakContainer();
   });
 
   it('should succeed', async () => {
