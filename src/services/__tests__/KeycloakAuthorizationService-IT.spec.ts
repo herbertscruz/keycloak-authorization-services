@@ -19,14 +19,9 @@ describe('when requesting all authorization services endpoints and metadata', ()
   let service: KeycloakAuthorizationService;
 
   beforeAll(async () => {
-    await helper.startKeycloakContainer();
     config.baseUrl = helper.getBaseUrl();
     const jwtToken = new JWTTokenService(config);
     service = new KeycloakAuthorizationService(config, jwtToken);
-  });
-
-  afterAll(async () => {
-    await helper.stopKeycloakContainer();
   });
 
   it('should succeed', async () => {
