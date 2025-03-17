@@ -1,6 +1,6 @@
 {
   "name": "keycloak-authorization-services",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "This library implements the [Keycloak Authorization Service](https://www.keycloak.org/docs/latest/authorization_services/#_service_overview).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,3 +1,3 @@
 beforeAll(() => {
-  console.log('__CONTAINER__:', globalThis.__CONTAINER__);
+  console.log('__CONTAINER__:', (globalThis as any).__CONTAINER__);
 });
