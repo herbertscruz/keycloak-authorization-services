@@ -47,47 +47,53 @@ export default class KeycloakAuthorizationService {
     params: KeycloakAuthorizationRequestParams,
     options: KeycloakAuthorizationRequestOptions,
   ): Promise<any> {
-    const formSet = new Set();
-    formSet.add('grant_type=urn:ietf:params:oauth:grant-type:uma-ticket');
+    const form = new URLSearchParams();
+    form.set('grant_type', 'urn:ietf:params:oauth:grant-type:uma-ticket');
 
     Object.keys(params).forEach((key) => {
       const value = (params as any)[key];
       if (key !== 'permission' && value) {
-        formSet.add(`${key}=${value}`);
+        form.set(key, value);
       }
     });
 
     const claimToken = this.normalizeClaimsToken(params);
     if (claimToken) {
-      formSet.add(`claim_token=${claimToken}`);
+      form.set('claim_token', claimToken);
     }
     if (params.claim_token) {
-      formSet.add('claim_token_format=urn:ietf:params:oauth:token-type:jwt');
+      form.set('claim_token_format', 'urn:ietf:params:oauth:token-type:jwt');
     }
 
     const audience = this.normalizeAudience(params, options);
     if (audience) {
-      formSet.add(`audience=${audience}`);
+      form.set('audience', audience);
     }
 
-    const form = [...formSet];
-
     const permissions = this.normalizePermission(params);
-    permissions.forEach((permission) => form.push(`permission=${permission}`));
+    permissions.forEach((permission) => form.append('permission', permission));
 
     debug(form);
 
-    const { data } = await axios.post(
-      `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/token`,
-      form.join('&'),
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          Authorization: `Bearer ${options.token}`,
+    try {
+      const { data } = await axios.post(
+        `${this.config.baseUrl}/realms/${this.config.realm}/protocol/openid-connect/token`,
+        form,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            Authorization: `Bearer ${options.token}`,
+          },
         },
-      },
-    );
-    return data;
+      );
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        debug(error?.response?.data);
+      }
+      debug(error);
+      throw error;
+    }
   }
 
   private normalizeClaimsToken(

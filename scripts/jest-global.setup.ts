@@ -20,11 +20,7 @@ export default async () => {
         target: `/opt/keycloak/data/import/${fileName}`,
       })),
     )
-    .withEntrypoint([
-      '/opt/keycloak/bin/kc.sh',
-      'start-dev',
-      '--import-realm',
-    ])
+    .withEntrypoint(['/opt/keycloak/bin/kc.sh', 'start-dev', '--import-realm'])
     .withExposedPorts({
       container: 8080,
       host: 8080,
