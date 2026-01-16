@@ -11,7 +11,6 @@ export default class TestHelper {
   private baseUrl = 'http://localhost:8080';
   private tokenEndpoint = '/realms/main/protocol/openid-connect/token';
 
-
   getBaseUrl(): string {
     return this.baseUrl;
   }
@@ -27,10 +26,7 @@ export default class TestHelper {
 
     const {
       data: { access_token },
-    } = await instance.post(
-      `${this.baseUrl}${this.tokenEndpoint}`,
-      params,
-    );
+    } = await instance.post(`${this.baseUrl}${this.tokenEndpoint}`, params);
     return access_token;
   }
 
@@ -42,10 +38,7 @@ export default class TestHelper {
 
     const {
       data: { access_token },
-    } = await instance.post(
-      `${this.baseUrl}${this.tokenEndpoint}`,
-      params,
-    );
+    } = await instance.post(`${this.baseUrl}${this.tokenEndpoint}`, params);
     return access_token;
   }
 }
