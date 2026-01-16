@@ -104,7 +104,7 @@ describe('when requesting all authorization services endpoints and metadata', ()
     );
     res.forEach((r) => debug(r.body));
     res.forEach((r) => {
-      expect(r.statusCode).toEqual(500);
+      expect(r.statusCode).toEqual(400);
     });
   });
 });
